@@ -1,0 +1,6 @@
+#ignore MAC DS FILE
+*.DS_Store
+
+#intelliji files
+.idea
+web-scraping-practice.iml
