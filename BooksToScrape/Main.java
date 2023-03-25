@@ -54,7 +54,7 @@ public class Main {
                     fw.write(books.get(i).toString() + "," + "\n");
                 }
                 else{
-                    fw.write(books.toString() + "\n");
+                    fw.write(books.get(i) + "\n");
                 }
             }
             fw.write("]");
