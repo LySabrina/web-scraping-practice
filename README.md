@@ -1,6 +1,8 @@
 #Description
 Collection of several web-scraping practice projects.
-Two dedicated sites that were made to be sites are from: http://toscrape.com/ 
+Two dedicated sites that were made to be sites are from: http://toscrape.com/
+
+Additionally, practice of Spring boot + React will be used. 
 
 #Notes
 Document is from the org.jsoup.nodes package

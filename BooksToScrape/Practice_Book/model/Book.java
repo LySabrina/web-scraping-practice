@@ -5,12 +5,22 @@ public class Book {
     private String image;
     private String url;
     private float price;
+    private String genre;
 
-    public Book(String name, String image, String url, float price) {
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public Book(String name, String image, String url, float price, String genre) {
         this.name = name;
         this.image = image;
         this.url = url;
         this.price = price;
+        this.genre = genre;
     }
 
     public String getName() {
@@ -50,7 +60,8 @@ public class Book {
         return "{" + "\"name\" : " + "\"" + name +"\"," +
                 "\"image\" : " + "\"" + image + "\"," +
                 "\"url\" : " + "\"" + url +"\"," +
-                "\"price\" : " +  price  +
+                "\"price\" : " +  price  +","+
+                "\"genre\" : " + "\"" +  genre + "\"" +
                 "}";
     }
 }
