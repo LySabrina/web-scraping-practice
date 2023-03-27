@@ -1,4 +1,4 @@
-package com.example.spring_books.service;
+package com.example.spring_books.utility;
 
 import com.example.spring_books.models.Book;
 import org.json.JSONObject;
@@ -20,12 +20,21 @@ public class BookScraping {
         public static Set<String> getGenres(){
             return listGenre;
         }
+
+        public static List<Book> getBooks(){
+            List<Book> books = new ArrayList<>();
+            String startingPage = "http://books.toscrape.com/";
+            webCrawler(books, startingPage);
+            return books;
+        }
         public static void main(String args[]){
             List<Book> books = new ArrayList<>();
             String startingPage = "http://books.toscrape.com/";
             webCrawler(books, startingPage);
-            writeToFile(books);
+
         }
+
+
 
         /**
          * Writes to a JSON file the book objects
@@ -62,11 +71,10 @@ public class BookScraping {
         public static void webCrawler(List<Book> books, String url){
             //parse the first page then gives the next page
             String url_page = url;
-            int i = 0;
+
             //Keep looping through the website page until it's null (null means we do not have any more books)
-            while(url_page != null && i < 1){
+            while(url_page != null){
                 url_page = webScrape(books, url_page);
-                i++;
             }
         }
 
@@ -87,7 +95,7 @@ public class BookScraping {
 
                 for(Element e : list){
                     Attributes name_link = e.selectFirst("h3").selectFirst("a").attributes();
-                    float price = Float.parseFloat(e.selectFirst("p.price_color").ownText().substring(1));
+                    double price = Double.parseDouble(e.selectFirst("p.price_color").ownText().substring(1));
 
                     //check if link has catalogue/ and remove if so
                     String url_temp= name_link.get("href");
@@ -98,7 +106,7 @@ public class BookScraping {
                     }
                     else{
                         int index = url_temp.indexOf("/");
-                        url = "http://books.toscrape.com/catalogue/" + url_temp.substring(index +1);
+                        url = "http://books.toscrape.com/catalogue/" + url_temp;
                     }
                     String genre = getGenre(url);
                     listGenre.add(genre);
@@ -125,7 +133,6 @@ public class BookScraping {
             try{
                 Document doc = Jsoup.connect(url).userAgent(USER_AGENT).header("Accept-Language", "*").get();
                 String genre = doc.selectFirst("ul.breadcrumb").child(2).child(0).ownText();
-                System.out.println("GENRE: " + genre + "----->");
                 return genre;
             }
             catch (Exception e){

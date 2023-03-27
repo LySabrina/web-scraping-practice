@@ -2,18 +2,19 @@ package com.example.spring_books.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
 public class Book {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue (strategy =  GenerationType.SEQUENCE)
     private Long id;
     private String name;
     private String image;
     private String url;
-    private float price;
+    private double price;
     private String genre;
 
     public String getGenre() {
@@ -27,7 +28,7 @@ public class Book {
     public Book() {
     }
 
-    public Book(String name, String image, String url, float price, String genre) {
+    public Book(String name, String image, String url, double price, String genre) {
         this.name = name;
         this.image = image;
         this.url = url;
@@ -59,11 +60,11 @@ public class Book {
         this.url = url;
     }
 
-    public float getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

@@ -1,0 +1,2 @@
+GET http://localhost:8080/book
+Content-Type: application/json
