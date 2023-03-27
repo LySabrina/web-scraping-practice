@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios"; //used to get information?
-import Breadcrumb from "react-bootstrap/Breadcrumb";
+import "../css/Home.css";
+import Aside from "./Aside";
 
 export default function Home() {
   const [book, setBooks] = useState([]);
+  
 
   useEffect(() =>{
       loadBooks();
   }, []);
+
 
   const loadBooks = async() =>{
       const result = await axios.get("http://localhost:8080/book");
       setBooks(result.data);
   };
 
+  
+
   return (
     <div className="container">
+        <Aside/>
     <div className="py-4">
       <table className="table border shadow">
         <thead>
@@ -41,21 +47,6 @@ export default function Home() {
       </table>
     </div>
   </div>
-    //   <nav aria-label="breadcrumb">
-    //     <ol class="breadcrumb">
-
-    //       <li class="breadcrumb-item">
-    //         <a href="#">Home</a>
-    //       </li>
-
-    //       <li class="breadcrumb-item">
-    //         <a href="#">Library</a>
-    //       </li>
-
-    //       <li class="breadcrumb-item active" aria-current="page">
-    //         Data
-    //       </li>
-    //     </ol>
-    //   </nav>
+  
   );
 }

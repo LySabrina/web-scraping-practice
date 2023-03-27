@@ -9,18 +9,27 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
 public class BookScraping {
         private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36";
-        private static Set<String> listGenre = new HashSet<>();
 
-        public static Set<String> getGenres(){
-            return listGenre;
+        public static List<String> getAllGenres(){
+            List<String> uniqueGenres = new ArrayList<>();
+            try{
+                Document doc = Jsoup.connect("http://books.toscrape.com/index.html").userAgent(USER_AGENT).get();
+                Element ul = doc.selectFirst("div.side_categories").child(0).child(0).child(1);
+                Elements li = ul.children();
+                for(Element e : li){
+                    uniqueGenres.add(e.text());
+                }
+                Collections.sort(uniqueGenres);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+            return uniqueGenres;
         }
-
         public static List<Book> getBooks(){
             List<Book> books = new ArrayList<>();
             String startingPage = "http://books.toscrape.com/";
@@ -28,13 +37,11 @@ public class BookScraping {
             return books;
         }
         public static void main(String args[]){
-            List<Book> books = new ArrayList<>();
-            String startingPage = "http://books.toscrape.com/";
-            webCrawler(books, startingPage);
-
+//            List<Book> books = new ArrayList<>();
+//            String startingPage = "http://books.toscrape.com/";
+//            webCrawler(books, startingPage);
+            getAllGenres();
         }
-
-
 
         /**
          * Writes to a JSON file the book objects
@@ -109,7 +116,6 @@ public class BookScraping {
                         url = "http://books.toscrape.com/catalogue/" + url_temp;
                     }
                     String genre = getGenre(url);
-                    listGenre.add(genre);
                     System.out.println("URL: " + url + "================>");
                     String name = name_link.get("title").replace("\"", "");
                     String image = e.selectFirst("img").attributes().get("src");
