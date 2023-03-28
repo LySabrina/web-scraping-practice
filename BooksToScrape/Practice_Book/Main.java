@@ -1,3 +1,4 @@
+
 import model.Book;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -7,19 +8,47 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
+/**
+ * Web-scraping from toscrape.com books
+ * Does not use threads/parallel web scraping
+ */
 public class Main {
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36";
-    private static Set<String> listGenre = new HashSet<>();
-    public static void main(String args[]){
+
+    public static List<String> getAllGenres(){
+        List<String> uniqueGenres = new ArrayList<>();
+        try{
+            Document doc = Jsoup.connect("http://books.toscrape.com/index.html").userAgent(USER_AGENT).get();
+            Element ul = doc.selectFirst("div.side_categories").child(0).child(0).child(1);
+            Elements li = ul.children();
+            for(Element e : li){
+                uniqueGenres.add(e.text());
+            }
+            Collections.sort(uniqueGenres);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return uniqueGenres;
+    }
+    public static List<Book> getBooks(){
         List<Book> books = new ArrayList<>();
         String startingPage = "http://books.toscrape.com/";
         webCrawler(books, startingPage);
-        writeToFile(books);
+        return books;
+    }
+    public static void main(String args[]){
+        final long startTime = System.currentTimeMillis();
+            List<Book> books = Collections.synchronizedList(new ArrayList<>());
+            String startingPage = "http://books.toscrape.com/";
+            webCrawler(books, startingPage);
+        final long endTime = System.currentTimeMillis();
+        System.out.println("TOTAL EXECUTION TIME: " + (endTime - startTime));
     }
 
     /**
@@ -27,7 +56,7 @@ public class Main {
      * @param books the list of books to write to JSON file
      */
     public static void writeToFile(List<Book> books){
-        File file = new File("BooksToScrape/Practice_Book/resources/out.json");
+        File file = new File("BooksToScrape/spring_books/resources/static/out.json");
         try{
             file.createNewFile();
             FileWriter fw = new FileWriter(file);
@@ -54,15 +83,17 @@ public class Main {
      * @param books the list of books to add to
      * @param url the starting URL to start from
      */
-    public static void webCrawler(List<Book> books, String url){
-        //parse the first page then gives the next page
+    public static void webCrawler(List<Book> books, String url)  {
+
         String url_page = url;
-        int i = 0;
-        //Keep looping through the website page until it's null (null means we do not have any more books)
-        while(url_page != null && i < 1){
-            url_page = webScrape(books, url_page);
-            i++;
+        while(url_page != null ){
+            url_page = webScrape(books,url_page);
+
         }
+
+
+        //Keep looping through the website page until it's null (null means we do not have any more books)
+
     }
 
     /**
@@ -82,7 +113,7 @@ public class Main {
 
             for(Element e : list){
                 Attributes name_link = e.selectFirst("h3").selectFirst("a").attributes();
-                float price = Float.parseFloat(e.selectFirst("p.price_color").ownText().substring(1));
+                double price = Double.parseDouble(e.selectFirst("p.price_color").ownText().substring(1));
 
                 //check if link has catalogue/ and remove if so
                 String url_temp= name_link.get("href");
@@ -93,10 +124,9 @@ public class Main {
                 }
                 else{
                     int index = url_temp.indexOf("/");
-                    url = "http://books.toscrape.com/catalogue/" + url_temp.substring(index +1);
+                    url = "http://books.toscrape.com/catalogue/" + url_temp;
                 }
                 String genre = getGenre(url);
-                listGenre.add(genre);
                 System.out.println("URL: " + url + "================>");
                 String name = name_link.get("title").replace("\"", "");
                 String image = e.selectFirst("img").attributes().get("src");
@@ -120,7 +150,6 @@ public class Main {
         try{
             Document doc = Jsoup.connect(url).userAgent(USER_AGENT).header("Accept-Language", "*").get();
             String genre = doc.selectFirst("ul.breadcrumb").child(2).child(0).ownText();
-            System.out.println("GENRE: " + genre + "----->");
             return genre;
         }
         catch (Exception e){
@@ -183,4 +212,5 @@ public class Main {
         }
         return null;
     }
+
 }

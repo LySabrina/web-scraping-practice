@@ -4,7 +4,7 @@ public class Book {
     private String name;
     private String image;
     private String url;
-    private float price;
+    private double price;
     private String genre;
 
     public String getGenre() {
@@ -15,7 +15,7 @@ public class Book {
         this.genre = genre;
     }
 
-    public Book(String name, String image, String url, float price, String genre) {
+    public Book(String name, String image, String url, double price, String genre) {
         this.name = name;
         this.image = image;
         this.url = url;
@@ -43,17 +43,19 @@ public class Book {
         return url;
     }
 
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
     public void setUrl(String url) {
         this.url = url;
     }
 
-    public float getPrice() {
-        return price;
-    }
 
-    public void setPrice(float price) {
-        this.price = price;
-    }
 
     @Override
     public String toString() {

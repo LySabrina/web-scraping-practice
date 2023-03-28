@@ -2,6 +2,7 @@ package com.example.spring_books.models;
 
 import com.example.spring_books.repository.BookRepository;
 import com.example.spring_books.utility.BookScraping;
+import com.example.spring_books.utility.BookScrapingParallel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -18,8 +19,8 @@ public class DbInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         bookRepository.deleteAll();
-        List<Book> listBook = new ArrayList<>();
-        listBook = BookScraping.getBooks();
+        List<Book> listBook = BookScrapingParallel.getAllBooks();
+        System.out.println("INIT");
         if(!(listBook == null)){
             for(Book b : listBook){
                 bookRepository.save(b);
