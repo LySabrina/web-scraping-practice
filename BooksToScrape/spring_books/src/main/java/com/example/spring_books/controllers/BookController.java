@@ -6,6 +6,7 @@ import com.example.spring_books.utility.BookScraping;
 import com.example.spring_books.utility.BookScrapingParallel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import java.util.Optional;
 
 import java.util.List;
 import java.util.Set;
@@ -30,4 +31,17 @@ public class BookController {
     public List<String> getUniqueGenres(){
         return BookScrapingParallel.getAllGenres();
     }
+
+    @GetMapping("/book/{id}")
+    public Book getBookDetails(@PathVariable Long id){
+        Optional<Book> bookResponse = bookRepository.findById(id);
+         Book myBook = bookResponse.get();
+        return myBook;
+    }
+
+    @GetMapping("/catalogue/{genre}")
+    public List<Book> getGenreBooks(@PathVariable String genre){
+        return bookRepository.getAllBooksByGenre(genre);
+    }
+
 }

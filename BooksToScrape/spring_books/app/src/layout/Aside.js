@@ -23,9 +23,8 @@ export default function Aside() {
         <ul>
             {
                 genres.map((genre) =>(
-                    <li style={myStyle}>{genre}</li>
+                    <li style={myStyle}> <a href="#">{genre}</a> </li>
                 ))
-                
             }
         </ul>
     </div>
