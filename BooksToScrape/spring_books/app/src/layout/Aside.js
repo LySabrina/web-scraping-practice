@@ -1,6 +1,6 @@
 import axios from "axios"; //used to get information?
 import React, { useEffect, useState } from "react";
-
+import { Link } from 'react-router-dom';
 export default function Aside() {
   const [genres, setGenres] = useState([]);
 
@@ -18,12 +18,19 @@ export default function Aside() {
         listStyleType : "none"
   };
 
+  function passData(genre){
+    const loadBookGenres = async() =>{
+      const result = await axios.get(`http://localhost:8080/catalogue/${genre}`);
+    };
+  }
   return (
     <div>
         <ul>
             {
                 genres.map((genre) =>(
-                    <li style={myStyle}> <a href="#">{genre}</a> </li>
+                    <li style={myStyle}>
+                      <Link to ={`/catalogue/${genre}`}> {genre}</Link>
+                    </li>
                 ))
             }
         </ul>

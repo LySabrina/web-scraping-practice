@@ -1,11 +1,15 @@
 package com.example.spring_books.utility;
 
 import com.example.spring_books.models.Book;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -139,7 +143,11 @@ public class BookScrapingParallel {
                     String genre = getGenre(book_url);
 
                     String name = name_link.get("title").replace("\"", "");
-                    String image = e.selectFirst("img").attributes().get("src");
+                    int lastSlash = e.selectFirst("img").attributes().get("src").lastIndexOf("/");
+                    String imageFile = e.selectFirst("img").attributes().get("src").substring(lastSlash + 1);
+                    String image = "http://books.toscrape.com"+  e.selectFirst("img").attributes().get("src").substring(2);
+
+                    downloadImages(image, imageFile);
                     Book book = new Book(name, image, book_url, price, genre);
                     books.add(book);
                 }
@@ -179,6 +187,23 @@ public class BookScrapingParallel {
             e.printStackTrace();
         }
         return listURLs;
+    }
+
+    public static void downloadImages(String imageURL, String fileName){
+        try{
+            Connection.Response response = Jsoup.connect(imageURL).ignoreContentType(true).execute();
+            System.out.println("Currently downloading: " + fileName);
+            File f = new File("src/main/resources/static/images/" + fileName);
+            f.createNewFile();
+            FileOutputStream out = new FileOutputStream(f);
+            out.write(response.bodyAsBytes());
+            out.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+
     }
 
     public static List<String> getAllGenres(){
