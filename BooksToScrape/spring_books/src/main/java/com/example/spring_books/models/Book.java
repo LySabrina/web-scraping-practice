@@ -13,9 +13,18 @@ public class Book {
     private Long id;
     private String name;
     private String image;
+    private String imageRef;
     private String url;
     private double price;
     private String genre;
+
+    public String getImageRef() {
+        return imageRef;
+    }
+
+    public void setImageRef(String imageRef) {
+        this.imageRef = imageRef;
+    }
 
     public String getGenre() {
         return genre;
@@ -28,9 +37,10 @@ public class Book {
     public Book() {
     }
 
-    public Book(String name, String image, String url, double price, String genre) {
+    public Book(String name, String image, String imageRef, String url, double price, String genre) {
         this.name = name;
         this.image = image;
+        this.imageRef = imageRef;
         this.url = url;
         this.price = price;
         this.genre = genre;

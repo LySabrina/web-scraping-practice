@@ -1,14 +1,12 @@
 package com.example.spring_books.models;
 
 import com.example.spring_books.repository.BookRepository;
-import com.example.spring_books.utility.BookScraping;
-import com.example.spring_books.utility.BookScrapingParallel;
+import com.example.spring_books.service.BookScrapingParallel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
